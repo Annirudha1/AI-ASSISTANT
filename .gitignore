@@ -1,0 +1,66 @@
+# Only ignore sensitive files# Django
+
+.env*.log
+
+.vscode/*.pot
+*.pyc
+__pycache__/
+local_settings.py
+*.sqlite3
+db.sqlite3-journal
+media/
+
+# Environment variables
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Credentials (IMPORTANT: Never commit these!)
+credentials/
+service-account*.json
+dialogflow*.json
+
+# Static files
+staticfiles/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Node / JS
+node_modules/
+
+

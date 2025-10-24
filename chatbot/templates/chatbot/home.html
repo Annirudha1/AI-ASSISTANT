@@ -1,0 +1,135 @@
+{% extends 'chatbot/base.html' %}
+
+{% block title %}Home - AI Assistant{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold text-primary mb-4">
+                    <i class="fas fa-brain me-3"></i>AI Assistant
+                </h1>
+                <p class="lead mb-4">
+                    Your intelligent AI companion with Google-level responses. 
+                    Ask anything, get instant answers, and explore the world of knowledge.
+                </p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'chatbot:chat' %}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-comments me-2"></i>Start Chatting
+                    </a>
+                    <a href="{% url 'chatbot:history' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-history me-2"></i>View History
+                    </a>
+                {% else %}
+                    <a href="{% url 'chatbot:register' %}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-user-plus me-2"></i>Get Started
+                    </a>
+                    <a href="{% url 'chatbot:login' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="features-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Why Choose Our AI Assistant?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4 h-100">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-search fa-3x text-primary"></i>
+                    </div>
+                    <h4>Google-Level Search</h4>
+                    <p class="text-muted">Real-time information with Google search integration. Get current news, facts, and data instantly.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4 h-100">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-lightbulb fa-3x text-primary"></i>
+                    </div>
+                    <h4>Intelligent Responses</h4>
+                    <p class="text-muted">Advanced AI that understands context, provides creative solutions, and explains complex topics simply.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4 h-100">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-globe fa-3x text-primary"></i>
+                    </div>
+                    <h4>Universal Knowledge</h4>
+                    <p class="text-muted">Ask about anything - science, history, technology, current events, or creative projects.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<div class="how-it-works py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="step-card text-center">
+                    <div class="step-number mb-3">1</div>
+                    <h5>Sign Up</h5>
+                    <p class="text-muted">Create your free account in seconds</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card text-center">
+                    <div class="step-number mb-3">2</div>
+                    <h5>Ask Anything</h5>
+                    <p class="text-muted">Ask questions about any topic</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card text-center">
+                    <div class="step-number mb-3">3</div>
+                    <h5>Get Smart Answers</h5>
+                    <p class="text-muted">Receive Google-level intelligent responses</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card text-center">
+                    <div class="step-number mb-3">4</div>
+                    <h5>Explore & Learn</h5>
+                    <p class="text-muted">Discover new knowledge and insights</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="cta-section py-5 text-center">
+    <div class="container">
+        <h3 class="mb-4">Ready to Explore Knowledge?</h3>
+        <p class="lead mb-4">Join thousands of users who are already getting Google-level AI responses and discovering new insights.</p>
+        {% if user.is_authenticated %}
+            <a href="{% url 'chatbot:chat' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-comments me-2"></i>Start Chatting Now
+            </a>
+        {% else %}
+            <a href="{% url 'chatbot:register' %}" class="btn btn-primary btn-lg me-3">
+                <i class="fas fa-user-plus me-2"></i>Sign Up Free
+            </a>
+            <a href="{% url 'chatbot:login' %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-sign-in-alt me-2"></i>Already Have Account?
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+

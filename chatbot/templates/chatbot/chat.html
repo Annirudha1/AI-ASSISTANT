@@ -1,0 +1,209 @@
+{% extends 'chatbot/base.html' %}
+
+{% block title %}Chat - AI Assistant{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Chat Header -->
+            <div class="chat-header text-center mb-4">
+                <h2><i class="fas fa-brain me-2"></i>AI Assistant</h2>
+                <p class="text-muted">Ask me anything! I have Google-level intelligence and real-time search capabilities.</p>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chatMessages">
+                            <!-- Welcome Message -->
+            <div class="message bot-message">
+                <div class="message-content">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-bubble">
+                        <p>Hello there! 👋 I'm your intelligent AI assistant with Google-level capabilities. I can help you with:</p>
+                        <ul class="mb-2">
+                            <li>🔍 Real-time information and current events</li>
+                            <li>🧠 Complex problem-solving and analysis</li>
+                            <li>💡 Creative ideas and brainstorming</li>
+                            <li>📚 Learning and educational content</li>
+                            <li>🌍 General knowledge and facts</li>
+                        </ul>
+                        <p>What would you like to explore today?</p>
+                        <small class="text-muted">Just now</small>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-container">
+                <form id="chatForm" class="chat-form">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" 
+                               id="questionInput" 
+                               class="form-control" 
+                               placeholder="Type your question here..."
+                               required>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
+                <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <small class="text-muted ms-2">AI is typing...</small>
+                </div>
+            </div>
+
+            <!-- Quick Questions -->
+            <div class="quick-questions mt-4">
+                <h6 class="text-muted mb-3">💡 Try asking me:</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-outline-primary btn-sm quick-question-btn" 
+                            data-question="Prime Minister of India">
+                        🇮🇳 Current PM of India
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm quick-question-btn" 
+                            data-question="What can you help me with?">
+                        🤖 What can you do?
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm quick-question-btn" 
+                            data-question="Explain quantum computing">
+                        ⚛️ Explain quantum computing
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm quick-question-btn" 
+                            data-question="Latest news today">
+                        📰 Latest news
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm quick-question-btn" 
+                            data-question="Write a creative story">
+                        ✍️ Write a story
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm quick-question-btn" 
+                            data-question="How do I learn programming?">
+                        💻 Learn programming
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatForm = document.getElementById('chatForm');
+    const questionInput = document.getElementById('questionInput');
+    const chatMessages = document.getElementById('chatMessages');
+    const typingIndicator = document.getElementById('typingIndicator');
+
+    // Handle form submission
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const question = questionInput.value.trim();
+        if (!question) return;
+
+        // Add user message
+        addMessage(question, 'user');
+        questionInput.value = '';
+
+        // Show typing indicator
+        showTypingIndicator();
+
+        // Send to API
+        sendQuestion(question);
+    });
+
+    // Quick question buttons
+    document.querySelectorAll('.quick-question-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const question = this.dataset.question;
+            questionInput.value = question;
+            chatForm.dispatchEvent(new Event('submit'));
+        });
+    });
+
+    function addMessage(text, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}-message`;
+        
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        if (sender === 'user') {
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <div class="message-bubble">
+                        <p>${text}</p>
+                        <small class="text-muted">${timeString}</small>
+                    </div>
+                    <div class="message-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            `;
+        } else {
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-bubble">
+                        <p>${text}</p>
+                        <small class="text-muted">${timeString}</small>
+                    </div>
+                </div>
+            `;
+        }
+        
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        typingIndicator.style.display = 'block';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function hideTypingIndicator() {
+        typingIndicator.style.display = 'none';
+    }
+
+    async function sendQuestion(question) {
+        try {
+            const response = await fetch('/api/chat/ask/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({ question: question })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                hideTypingIndicator();
+                addMessage(data.answer, 'bot');
+            } else {
+                throw new Error('Failed to get response');
+            }
+        } catch (error) {
+            hideTypingIndicator();
+            addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+            console.error('Error:', error);
+        }
+    }
+});
+</script>
+{% endblock %}
+
+
+
+
