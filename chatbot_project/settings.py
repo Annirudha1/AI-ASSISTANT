@@ -22,12 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)6g@9f%+#(6g0rk8@o*do^c0a#ze7otbla7^(l^3rma*2bo0%z'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-)6g@9f%+#(6g0rk8@o*do^c0a#ze7otbla7^(l^3rma*2bo0%z')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']  # For Render deployment
+CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']  # Add your Render domain
 
 
 # Application definition
@@ -84,11 +85,13 @@ WSGI_APPLICATION = 'chatbot_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3',
+        conn_max_age=600
+    )
 }
 
 
